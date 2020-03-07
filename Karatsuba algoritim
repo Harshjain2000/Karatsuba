@@ -1,0 +1,102 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int equaler(string &a,string &b)
+{
+	int len1=a.size(),len2=b.size();
+	
+	if(len1 == len2)
+	{
+		return len1;
+	}
+	else if(len1>len2)
+	{
+		for(int i=len2;i<len1;i++)
+		{
+			b="0"+b;
+		}
+	}
+	else{
+		for(int i=len1;i<len2;i++)
+		{
+			a="0"+a;
+		}
+	}
+	return b.size();
+}
+
+string binary_string(int a)
+{
+	string b="";
+	
+	while(a)
+	{
+		ostringstream ss;
+		ss<<(a%2);
+		string c = ss.str();
+		b=c+b;
+		a=a/2;
+	}
+	cout<<b<<endl;
+	return b;
+}
+
+string addit(string a,string b)
+{
+	string result;
+	
+	int len=equaler(a,b);
+	int carry=0;
+	
+	for (int i = len-1 ; i >= 0 ; i--) 
+    { 
+        int firstBit = a.at(i) - '0'; 
+        int secondBit = b.at(i) - '0'; 
+  
+        int sum = (firstBit ^ secondBit ^ carry)+'0'; 
+  
+        result = (char)sum + result; 
+  
+        carry = (firstBit&secondBit) | (secondBit&carry) | (firstBit&carry); 
+    } 
+    if (carry)  result = '1' + result; 
+  
+    return result; 
+}
+int multiplyiSingleBit(string a, string b) 
+{  return (a[0] - '0')*(b[0] - '0');  } 
+
+long int multiply(string a,string b)
+{
+	int n = equaler(a,b); 
+    if (n == 0) return 0; 
+    if (n == 1) return multiplyiSingleBit(a, b); 
+  
+    int fh = n/2;   
+    int sh = (n-fh);
+    
+    string Xl = a.substr(0, fh); 
+    string Xr = a.substr(fh, sh); 
+  
+    string Yl = b.substr(0, fh); 
+    string Yr = b.substr(fh, sh); 
+  
+    long int P1 = multiply(Xl, Yl); 
+    long int P2 = multiply(Xr, Yr); 
+    long int P3 = multiply(addit(Xl, Xr), addit(Yl, Yr)); 
+  
+    return P1*(1<<(2*sh)) + (P3 - P1 - P2)*(1<<sh) + P2; 
+	
+	
+}
+
+
+int main()
+{
+	int a,b;
+	cin>>a>>b;
+	
+	cout<<(multiply(binary_string(a),binary_string(b)));
+	
+	return 0;
+}
